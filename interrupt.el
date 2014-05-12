@@ -55,43 +55,47 @@
     "~/org/trabajo/distracciones"
     "Where should the distraction logs be stored."
     :type 'directory
-    :group 'distraction)
+    :group 'interrupt)
 
 (defcustom ask-for-user
     "who dares?"
     "Question to be asked whenever someone disturbs you."
     :type 'string
-    :group 'distraction)
+    :group 'interrupt)
 
-(defun get-distraction-file-path ()
+(defun interpt-get-file-path ()
   "String representing the final dir where to store each file."
-  (format distraction-dir (format-time-string "/%Y/%m/%d")))
+  (format "%s%s.org" distraction-dir (format-time-string "/%Y/%m/%d" )))
 
 ;;; TODO:
 ;; * if the file has been already open, just load the buffer,
 ;;   if not add a header with info
-(defun open-interrupt-file ()
+(defun interpt-open-file ()
   "Open or create the file where the log wil occur."
   (let
-      ((file-name (get-distraction-file-path)))
+      ((file-name (interpt-get-file-path)))
     (find-file file-name)))
 
-(defun log-interruption (who)
+(defun interpt-list-to-org-tags (x)
+  "given a list of strings, make them a list of tags for org-mode"
+  (format ":%s:" (mapconcat 'identity x ":")))
+
+(defun interpt-log (who)
   "Log the interruption to a file.
-WHO describes the user or group who caused the interruption."
-  (open-interrupt-file)
+WHO describes the user or group who caused the interruption. It's a list of strings"
+  (interpt-open-file)
   (goto-char (point-max))
   (org-insert-heading)
   (org-insert-time-stamp (org-read-date nil t "now") t)
   (insert " ")
   (save-excursion
-    (org-set-tags-to (format ":%s:" who))))
+    (org-set-tags-to (interpt-list-to-org-tags who))))
 
 ;; TODO accept multiple interrupters
 (defun interrupt (who)
   "Prompt the user WHO dared to interrupt and log it."
   (interactive (list (read-string (format "%s:" ask-for-user))))
-  (log-interruption (car who)))
+  (interpt-log (split-string who)))
 
 (provide 'interrupt.el)
 ;;; interrupt.el ends here
