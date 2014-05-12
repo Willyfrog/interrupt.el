@@ -97,6 +97,17 @@ WHO describes the user or group who caused the interruption. It's a list of stri
   (interactive (list (read-string (format "%s:" ask-for-user))))
   (interpt-log (split-string who)))
 
+(defun interpt-get-last-time-stamp-string ()
+  (point-max)
+  (beginning-of-line)
+  (buffer-substring-no-properties (- (search-forward "<") 1)
+                           (search-forward ">"))
+  )
+
+(defun interpt-by-minutes (date-string)
+  "Given a org-stile DATE-STRING return the number of minutes passed"
+  (round (/ (abs (org-time-stamp-to-now date-string t)) 60)))
+
 (provide 'interrupt)
 ;;; interrupt.el ends here
 
