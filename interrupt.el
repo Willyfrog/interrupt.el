@@ -1,4 +1,4 @@
-;;; interrupt.el --- Add a line especifying who interrupted and why
+;;; interrupt.el --- Add a line to a file especifying who interrupted and why
 
 ;; Copyright (C) 2014 Guillermo Vayá Pérez
 
