@@ -97,6 +97,6 @@ WHO describes the user or group who caused the interruption. It's a list of stri
   (interactive (list (read-string (format "%s:" ask-for-user))))
   (interpt-log (split-string who)))
 
-(provide 'interrupt.el)
+(provide 'interrupt)
 ;;; interrupt.el ends here
 
