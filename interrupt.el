@@ -77,12 +77,12 @@
     (find-file file-name)))
 
 (defun interpt-list-to-org-tags (x)
-  "given a list of strings, make them a list of tags for org-mode"
+  "Given X as a list of strings, make them a list of tags for 'org-mode'."
   (format ":%s:" (mapconcat 'identity x ":")))
 
 (defun interpt-log (who)
   "Log the interruption to a file.
-WHO describes the user or group who caused the interruption. It's a list of strings"
+WHO describes the user or group who caused the interruption.  It's a list of strings."
   (interpt-open-file)
   (goto-char (point-max))
   (org-insert-heading)
@@ -98,15 +98,25 @@ WHO describes the user or group who caused the interruption. It's a list of stri
   (interpt-log (split-string who)))
 
 (defun interpt-get-last-time-stamp-string ()
-  (point-max)
-  (beginning-of-line)
+  "Find the last timestamp string written by interrupt."
+  (interpt-move-to-last-written-line)
   (buffer-substring-no-properties (- (search-forward "<") 1)
-                           (search-forward ">"))
-  )
+                           (search-forward ">")))
 
 (defun interpt-by-minutes (date-string)
-  "Given a org-stile DATE-STRING return the number of minutes passed"
+  "Given a org-stile DATE-STRING return the number of minutes passed."
   (round (/ (abs (org-time-stamp-to-now date-string t)) 60)))
+
+(defun interpt-move-to-last-written-line ()
+  "Find the last written line."
+  (point-max)
+  (search-backward-regexp "^*"))
+
+(defun interpt-end ()
+  "End the interruption and log the time."
+  (interpt-open-file)
+  (save-excursion
+    (insert (format "{%s min}" (interpt-by-minutes (interpt-get-last-time-stamp-string))))))
 
 (provide 'interrupt)
 ;;; interrupt.el ends here
