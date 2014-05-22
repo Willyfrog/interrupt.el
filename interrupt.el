@@ -2,9 +2,9 @@
 
 ;; Copyright (C) 2014 Guillermo Vayá Pérez
 
-;; Author   : Guillermo Vaya <guivaya@gmail.com>
+;; Author   : Guillermo Vaya <guivaya@gmail.com> <@Willyfrog_>
 ;; URL      : https://github.com/willyfrog/interrupt.el
-;; Version  : 0.1
+;; Version  : 0.2
 ;; Keywords : interruption, org-mode
 
 ;; The MIT License (MIT)
@@ -39,13 +39,12 @@
 ;; to the source of interruption.
 ;; 
 ;; After calling INTERRUPT the system will ask who interrupted and will
-;; log it along with the time.  Point will be set right after the time so
+;; log it along with the current time.  Point will be set right after the time so
 ;; an explanation can be written later.
 
-;;; Todo
-
-;; add another function so it can compare to the last
-;;  entry and annotate the time spent on the interruption
+;; Once the interrupt is finished, interrupt-end can be called so it records
+;; the time spent.  This can be called multiple times in case the
+;; interruptor came back ;)
 
 ;;; Code:
 
@@ -67,9 +66,6 @@
   "String representing the final dir where to store each file."
   (format "%s%s.org" distraction-dir (format-time-string "/%Y/%m/%d" )))
 
-;;; TODO:
-;; * if the file has been already open, just load the buffer,
-;;   if not add a header with info
 (defun interpt-open-file ()
   "Open or create the file where the log wil occur."
   (let
@@ -119,7 +115,7 @@ WHO describes the user or group who caused the interruption.  It's a list of str
   (point-max)
   (search-backward-regexp "^*"))
 
-(defun interpt-end ()
+(defun interrupt-end ()
   "End the interruption and log the time."
   (interactive)
   (interpt-open-file)
