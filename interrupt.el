@@ -107,6 +107,13 @@ WHO describes the user or group who caused the interruption.  It's a list of str
   "Given a org-stile DATE-STRING return the number of minutes passed."
   (round (/ (abs (org-time-stamp-to-now date-string t)) 60)))
 
+(defun interpt-delete-end-interrupt ()
+  "Delete any interruption-end found on the line."
+  (save-restriction
+    (narrow-to-region (line-beginning-position) (line-end-position))
+    (while (re-search-forward "{[0-9]+ min}" nil t)
+      (replace-match "" nil nil))))
+
 (defun interpt-move-to-last-written-line ()
   "Find the last written line."
   (point-max)
@@ -114,9 +121,12 @@ WHO describes the user or group who caused the interruption.  It's a list of str
 
 (defun interpt-end ()
   "End the interruption and log the time."
+  (interactive)
   (interpt-open-file)
   (save-excursion
-    (insert (format "{%s min}" (interpt-by-minutes (interpt-get-last-time-stamp-string))))))
+    (let ((time-stamp (interpt-get-last-time-stamp-string)))
+      (interpt-delete-end-interrupt)
+      (insert (format "{%s min}" (interpt-by-minutes time-stamp))))))
 
 (provide 'interrupt)
 ;;; interrupt.el ends here
