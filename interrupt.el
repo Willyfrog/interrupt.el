@@ -68,8 +68,11 @@
 
 (defun interpt-open-file ()
   "Open or create the file where the log wil occur."
-  (let
-      ((file-name (interpt-get-file-path)))
+  (let*
+      ((file-name (interpt-get-file-path))
+       (directory-name (file-name-directory file-name)))
+    (when (not (file-accessible-directory-p directory-name))
+      (make-directory directory-name t))
     (find-file file-name)))
 
 (defun interpt-list-to-org-tags (x)
